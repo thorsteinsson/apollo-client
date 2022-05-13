@@ -5,12 +5,14 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "post-update": "yarn upgrade --latest"
+    "post-update": "yarn upgrade --latest",
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "3.6.2",
+    "@graphql-codegen/cli": "^2.6.2",
     "@types/react": "18.0.9",
-    "graphql": "16.5.0",
+    "graphql": "^16.5.0",
     "next": "latest",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -20,5 +22,12 @@
   "keywords": [
     "next"
   ],
-  "description": "A \"Hello World\" application with multiple pages that shows how Next.js routing works."
+  "description": "A \"Hello World\" application with multiple pages that shows how Next.js routing works.",
+  "devDependencies": {
+    "@types/node": "^17.0.33",
+    "@graphql-codegen/typescript-operations": "2.4.0",
+    "@graphql-codegen/typescript-react-apollo": "3.2.14",
+    "@graphql-codegen/typescript": "2.4.11",
+    "@graphql-codegen/cli": "2.6.2"
+  }
 }

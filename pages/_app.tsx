@@ -1,4 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
+import { AppProps } from "next/app";
 import { client } from "../apollo";
 
 export default function MyApp({ Component, pageProps }: AppProps) {

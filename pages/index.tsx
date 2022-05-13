@@ -1,33 +1,61 @@
-import { gql, useQuery } from "@apollo/client";
+import { FormEvent, useState } from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import {
+  CreatePlaylistMutation,
+  GetPlaylistsQuery,
+} from "../generated/graphql";
 
-const LAUNCHES_QUERY = gql`
-  query RecentLaunches {
-    launchesPast(limit: 10) {
-      mission_name
+const GET_PLAYLISTS = gql`
+  query getPlaylists {
+    playlists {
+      id
+      name
     }
   }
 `;
 
-function RecentLaunches() {
-  const { data, loading, error } = useQuery(LAUNCHES_QUERY);
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error!</div>;
-
-  return (
-    <div>
-      <h1>Launches</h1>
-      {data.launchesPast.map((launch) => (
-        <div>{launch.mission_name}</div>
-      ))}
-    </div>
-  );
-}
+const CREATE_PLAYLIST = gql`
+  mutation createPlaylist($name: String!) {
+    createPlaylist(input: { name: $name }) {
+      id
+      name
+    }
+  }
+`;
 
 export default function IndexPage() {
+  const { data } = useQuery<GetPlaylistsQuery>(GET_PLAYLISTS);
+  const [createPlaylist] = useMutation<CreatePlaylistMutation>(
+    CREATE_PLAYLIST,
+    {
+      refetchQueries: [GET_PLAYLISTS],
+    }
+  );
+  const [name, setName] = useState("");
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    createPlaylist({ variables: { name } });
+    setName("");
+  };
+
   return (
     <div>
-      <h2>Hello World</h2>
-      <RecentLaunches />
+      <h2>Playlists</h2>
+      <form onSubmit={onSubmit}>
+        <input
+          name="name"
+          placeholder="Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <button type="submit">Create playlist</button>
+      </form>
+      {data?.playlists.map((playlist) => (
+        <div key={playlist.id}>
+          <h3>{playlist.name}</h3>
+        </div>
+      ))}
     </div>
   );
 }
