@@ -29,9 +29,9 @@ export type CreatePlaylistInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addToPlaylist?: Maybe<Playlist>;
-  createPlaylist?: Maybe<Playlist>;
-  removeFromPlaylist?: Maybe<Playlist>;
+  addToPlaylist?: Maybe<PlaylistInfo>;
+  createPlaylist?: Maybe<PlaylistInfo>;
+  removeFromPlaylist?: Maybe<PlaylistInfo>;
 };
 
 
@@ -53,20 +53,26 @@ export type Playlist = {
   __typename?: 'Playlist';
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
-  videos?: Maybe<Array<Maybe<PlaylistItem>>>;
+};
+
+export type PlaylistInfo = {
+  __typename?: 'PlaylistInfo';
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  videos?: Maybe<Array<PlaylistItem>>;
 };
 
 export type PlaylistItem = {
   __typename?: 'PlaylistItem';
   description?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  videoId?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
+  videoId: Scalars['ID'];
   viewsCount?: Maybe<Scalars['Int']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  playlist?: Maybe<Playlist>;
+  playlist?: Maybe<PlaylistInfo>;
   playlists: Array<Playlist>;
 };
 
@@ -80,54 +86,26 @@ export type RemoveFromPlaylistInput = {
   videoId: Scalars['String'];
 };
 
-export type GetPlaylistsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetPlaylistsQuery = { __typename?: 'Query', playlists: Array<{ __typename?: 'Playlist', id: string, name?: string | null }> };
-
 export type CreatePlaylistMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
 
 
-export type CreatePlaylistMutation = { __typename?: 'Mutation', createPlaylist?: { __typename?: 'Playlist', id: string, name?: string | null } | null };
+export type CreatePlaylistMutation = { __typename?: 'Mutation', createPlaylist?: { __typename?: 'PlaylistInfo', id: string, name?: string | null } | null };
+
+export type GetPlaylistsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export const GetPlaylistsDocument = gql`
-    query getPlaylists {
-  playlists {
-    id
-    name
-  }
-}
-    `;
+export type GetPlaylistsQuery = { __typename?: 'Query', playlists: Array<{ __typename?: 'Playlist', id: string, name?: string | null }> };
 
-/**
- * __useGetPlaylistsQuery__
- *
- * To run a query within a React component, call `useGetPlaylistsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPlaylistsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPlaylistsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetPlaylistsQuery(baseOptions?: Apollo.QueryHookOptions<GetPlaylistsQuery, GetPlaylistsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPlaylistsQuery, GetPlaylistsQueryVariables>(GetPlaylistsDocument, options);
-      }
-export function useGetPlaylistsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPlaylistsQuery, GetPlaylistsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPlaylistsQuery, GetPlaylistsQueryVariables>(GetPlaylistsDocument, options);
-        }
-export type GetPlaylistsQueryHookResult = ReturnType<typeof useGetPlaylistsQuery>;
-export type GetPlaylistsLazyQueryHookResult = ReturnType<typeof useGetPlaylistsLazyQuery>;
-export type GetPlaylistsQueryResult = Apollo.QueryResult<GetPlaylistsQuery, GetPlaylistsQueryVariables>;
+export type GetPlaylistQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetPlaylistQuery = { __typename?: 'Query', playlist?: { __typename?: 'PlaylistInfo', id: string, name?: string | null, videos?: Array<{ __typename?: 'PlaylistItem', videoId: string, title: string }> | null } | null };
+
+
 export const CreatePlaylistDocument = gql`
     mutation createPlaylist($name: String!) {
   createPlaylist(input: {name: $name}) {
@@ -162,3 +140,78 @@ export function useCreatePlaylistMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreatePlaylistMutationHookResult = ReturnType<typeof useCreatePlaylistMutation>;
 export type CreatePlaylistMutationResult = Apollo.MutationResult<CreatePlaylistMutation>;
 export type CreatePlaylistMutationOptions = Apollo.BaseMutationOptions<CreatePlaylistMutation, CreatePlaylistMutationVariables>;
+export const GetPlaylistsDocument = gql`
+    query GetPlaylists {
+  playlists {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetPlaylistsQuery__
+ *
+ * To run a query within a React component, call `useGetPlaylistsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPlaylistsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPlaylistsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPlaylistsQuery(baseOptions?: Apollo.QueryHookOptions<GetPlaylistsQuery, GetPlaylistsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPlaylistsQuery, GetPlaylistsQueryVariables>(GetPlaylistsDocument, options);
+      }
+export function useGetPlaylistsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPlaylistsQuery, GetPlaylistsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPlaylistsQuery, GetPlaylistsQueryVariables>(GetPlaylistsDocument, options);
+        }
+export type GetPlaylistsQueryHookResult = ReturnType<typeof useGetPlaylistsQuery>;
+export type GetPlaylistsLazyQueryHookResult = ReturnType<typeof useGetPlaylistsLazyQuery>;
+export type GetPlaylistsQueryResult = Apollo.QueryResult<GetPlaylistsQuery, GetPlaylistsQueryVariables>;
+export const GetPlaylistDocument = gql`
+    query GetPlaylist($id: ID!) {
+  playlist(id: $id) {
+    id
+    name
+    videos {
+      videoId
+      title
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPlaylistQuery__
+ *
+ * To run a query within a React component, call `useGetPlaylistQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPlaylistQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPlaylistQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPlaylistQuery(baseOptions: Apollo.QueryHookOptions<GetPlaylistQuery, GetPlaylistQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPlaylistQuery, GetPlaylistQueryVariables>(GetPlaylistDocument, options);
+      }
+export function useGetPlaylistLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPlaylistQuery, GetPlaylistQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPlaylistQuery, GetPlaylistQueryVariables>(GetPlaylistDocument, options);
+        }
+export type GetPlaylistQueryHookResult = ReturnType<typeof useGetPlaylistQuery>;
+export type GetPlaylistLazyQueryHookResult = ReturnType<typeof useGetPlaylistLazyQuery>;
+export type GetPlaylistQueryResult = Apollo.QueryResult<GetPlaylistQuery, GetPlaylistQueryVariables>;
