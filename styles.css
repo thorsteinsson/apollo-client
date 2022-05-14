@@ -1,0 +1,20 @@
+* {
+	color: #efefef;
+	border-color: #303030;
+}
+
+body {
+	background-color: #181818;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+input {
+	background-color: #121212;
+}
+
+button {
+	color: #222;
+	cursor: pointer;
+}
